@@ -1,2 +1,47 @@
+### Intellij ###
+*.iml
+.ensime
+.ensime_cache/
+.idea/
+
+## File-based project format:
+*.ipr
+*.iws
+
+## Plugin-specific files:
+
+# IntelliJ
+out/
+
+### Scala ###
 *.class
 *.log
+
+# sbt specific
+.cache
+.history
+.lib/
+dist/*
+target/
+lib_managed/
+src_managed/
+project/
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
+.cache-*
+
+### SBT ###
+# Simple Build Tool
+# http://www.scala-sbt.org/release/docs/Getting-Started/Directories.html#configuring-version-control
+
+proto/src/
+.settings
+.project
+.classpath
+
+\#*\#
+\.\#.*
+
+.DS_Store
