@@ -7,7 +7,7 @@ import scalaz.concurrent.{Strategy, Task}
 import scalaz._
 import Scalaz._
 import scala.concurrent.duration.{FiniteDuration, MILLISECONDS}
-import scalaz.stream.{Channel, Process, Sink, async, sink}
+import scalaz.stream.{Channel, Process, Sink, async, sink, channel => schannel}
 import scalaz.stream.Process._
 import scalaz.stream.async.mutable.Queue
 

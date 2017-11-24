@@ -15,6 +15,7 @@ lazy val scalacBaseOpts = Seq(
   "-Ywarn-dead-code",
   "-Ywarn-infer-any",
   "-Ywarn-unused-import"
+
 )
 
 lazy val scalacRigidOpts = Seq(
@@ -46,12 +47,12 @@ lazy val testDependencies = Seq(
   specs2Dep
 )
 
-lazy val scalazVersion = "7.1.0"
-lazy val scalazStreamVersion = "0.8"
+lazy val scalazVersion = "7.1.1"
+lazy val scalazStreamVersion = "0.7a"
 lazy val rabbitmqVersion = "3.3.4"
 lazy val slf4jVersion = "1.7.5"
 lazy val typesafeConfVersion = "1.3.1"
-lazy val monocleVersion = "1.4.0"
+lazy val monocleVersion = "1.1.1"
 lazy val scalacheckVersion = "1.12.5"
 lazy val specs2Version = "3.3.1"
 lazy val junitVersion = "4.10"

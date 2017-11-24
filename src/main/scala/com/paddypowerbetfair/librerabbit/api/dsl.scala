@@ -1,13 +1,12 @@
 package com.paddypowerbetfair.librerabbit.api
 
-import com.paddypowerbetfair.librerabbit.api.model._
-import com.paddypowerbetfair.librerabbit.api.algebra._
-import com.paddypowerbetfair.librerabbit.api.channel.{ErrorHandlerFn, ReceiveHandlerFn}
-
-import scala.language.reflectiveCalls
+//import scala.language.reflectiveCalls
 import scalaz._
 
 object dsl {
+  import model._
+  import algebra._
+  import channel.{ErrorHandlerFn, ReceiveHandlerFn}
 
   type BrokerIO[A] = Free.FreeC[BrokerF,A]
 

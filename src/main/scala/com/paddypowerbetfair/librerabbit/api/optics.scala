@@ -1,15 +1,15 @@
 package com.paddypowerbetfair.librerabbit.api
+import com.paddypowerbetfair.librerabbit.api.model._
 
 import java.util.Date
 
-import com.paddypowerbetfair.librerabbit.api.model.{NestableList, NestableMap, _}
 import monocle._
 import Monocle._
-import monocle.macros._
 
 import scala.language.higherKinds
 
 trait optics {
+  import monocle.macros._
 
   val publishL      = GenLens[Publish]
   val amqpEnvelopeL = GenLens[AmqpEnvelope]
