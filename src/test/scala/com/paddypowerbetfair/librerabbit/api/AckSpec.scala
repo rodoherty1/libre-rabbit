@@ -1,13 +1,11 @@
 package com.paddypowerbetfair.librerabbit.api
 
 import com.paddypowerbetfair.librerabbit.all._
+import org.scalacheck.{Arbitrary, Gen}
+import org.junit.runner.RunWith
 import org.specs2.{ScalaCheck, Specification}
 import org.specs2.matcher.MustMatchers
-
-import org.scalacheck.{Arbitrary, Gen}
-
 import org.specs2.runner.JUnitRunner
-import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
 class AckSpec extends Specification with ScalaCheck with MustMatchers {
@@ -25,7 +23,7 @@ class AckSpec extends Specification with ScalaCheck with MustMatchers {
 
   """
 
-  def ackedOnSuccess = prop { (generatedMessages:List[AmqpEnvelope]) =>
+  def ackedOnSuccess = prop { (_:List[AmqpEnvelope]) =>
     true
   }
 }
