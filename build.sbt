@@ -56,8 +56,8 @@ lazy val rabbitmqVersion = "3.3.4"
 lazy val slf4jVersion = "1.7.5"
 lazy val typesafeConfVersion = "1.3.1"
 lazy val monocleVersion = "1.1.1"
-lazy val specs2Version = "4.0.1"
-lazy val scalaCheckVersion = "1.13.4"
+lazy val specs2Version = "3.6.6"
+lazy val scalaCheckVersion = "1.11.4"
 lazy val junitVersion = "4.10"
 
 
@@ -71,7 +71,7 @@ lazy val typesafeConfDep   =  "com.typesafe"                 %  "config"        
 lazy val monocleCoreDep    =  "com.github.julien-truffaut"  %%  "monocle-core"               % monocleVersion
 lazy val monocleGenericDep =  "com.github.julien-truffaut"  %%  "monocle-generic"            % monocleVersion
 lazy val monocleMacroDep   =  "com.github.julien-truffaut"  %%  "monocle-macro"              % monocleVersion
-lazy val scalaCheckDep     =  "org.scalacheck"              %%  "scalacheck"                 % scalaCheckVersion    % Test
+val scalaCheckDep     =  "org.scalacheck"              %%  "scalacheck"                 % scalaCheckVersion    % Test
 //lazy val specs2Dep         =  "org.specs2"                  %%  "specs2"                     % specs2Version        % Test
 lazy val spec2ScalaCheckDep= "org.specs2"                   %%  "specs2-scalacheck"          % specs2Version        % Test
 
