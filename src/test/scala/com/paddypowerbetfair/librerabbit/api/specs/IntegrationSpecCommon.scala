@@ -9,7 +9,9 @@ import scala.concurrent.duration._
 import scala.util.Random
 import scalaz.{-\/, \/-}
 import scalaz.concurrent.{Strategy, Task}
+//import scalaz.concurrent.Strategy
 import scalaz.stream.Process.{emit, emitAll}
+//import scalaz.stream.Process.emitAll
 import scalaz.stream._
 
 import scala.collection.immutable.SortedSet
@@ -23,7 +25,7 @@ object IntegrationSpecCommon {
 
   val client:TestClient[TopicPublish] = TestClient()
 
-  import client._
+//  import client._
 
   val topicPublisher: BrokerIO[Sink[Task, TopicPublish]] =
     for {
@@ -42,12 +44,12 @@ object IntegrationSpecCommon {
   val encode = (key:String) => (msg:AmqpMessage) => TopicPublish(TopicKey(key), msg)
   val decode = (env:AmqpEnvelope) => new String(env.message.payload, "UTF-8")
 
-  val publishCommandsAndWaitForReply = (key:String) => (commands:List[Command]) => {
+  val publishCommandsAndWaitForReply: String => List[Command] => String = (key:String) => (commands:List[Command]) => {
     val correlationId     = if(key == "v1") "default-calculationId" else Random.nextString(20)
     val fullSequence      = Reset :: commands ::: List(Publish)
     val rawPayloads       = emitAll(fullSequence).toSource.map(_.toString.getBytes("UTF-8"))
-    val versionedMessages = createMessagesFromPayloads(correlationId)(rawPayloads)
-    val replies           = publishMessages(correlationId, versionedMessages)(encode(key), decode)
+    val versionedMessages = client.createMessagesFromPayloads(correlationId)(rawPayloads)
+    val replies           = client.publishMessages(correlationId, versionedMessages)(encode(key), decode)
 
     replies.runLastOr("No response received").run
   }
@@ -59,9 +61,9 @@ object IntegrationSpecCommon {
     val correlationId     = if(key == "v1") "default-calculationId" else Random.nextString(20)
     val fullSequence      = Reset :: commands ::: List(Publish)
     val rawPayloads       = emitAll(fullSequence).toSource.map(_.toString.getBytes("UTF-8"))
-    val versionedMessages = createMessagesFromPayloads(correlationId)(rawPayloads)
+    val versionedMessages = client.createMessagesFromPayloads(correlationId)(rawPayloads)
     val reversedOrder     = versionedMessages.fold(SortedSet.empty[AmqpMessage](reverseOrder))(_ + _).flatMap(msgs => Process.emitAll(msgs.to[Seq]).toSource)
-    val replies           = publishMessages(correlationId, reversedOrder)(encode(key), decode)
+    val replies           = client.publishMessages(correlationId, reversedOrder)(encode(key), decode)
 
     replies.runLastOr("No response received").timed(timeout).run
   }
@@ -70,9 +72,9 @@ object IntegrationSpecCommon {
     val correlationId     = if (key == "v1") "default-calculationId" else Random.nextString(20)
     val fullSequence      = Reset :: commands ::: List(Publish)
     val rawPayloads       = emitAll(fullSequence).toSource.map(_.toString.getBytes("UTF-8"))
-    val versionedMessages = createMessagesFromPayloads(correlationId)(rawPayloads)
+    val versionedMessages = client.createMessagesFromPayloads(correlationId)(rawPayloads)
     val duplicated        = versionedMessages.flatMap(msg => emit(msg) ++ emit(msg))
-    val replies           = publishMessages(correlationId, duplicated)(encode(key), decode)
+    val replies           = client.publishMessages(correlationId, duplicated)(encode(key), decode)
 
     replies.runLastOr("No response received").timed(timeout).run
   }

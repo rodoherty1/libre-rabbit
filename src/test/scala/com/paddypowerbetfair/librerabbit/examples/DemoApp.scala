@@ -17,6 +17,12 @@ object DemoApp {
   implicit val pool = threadPoolFor(10, "DemoApp")
   implicit val S    = Strategy.Executor(pool)
 
+  val defaultLogger:Sink[Task, String] =
+    io.stdOutLines pipeIn process1.lift[String,String]((str:String) => s"[${Thread.currentThread()}] - $str")
+
+  val silentLogger:Sink[Task, String] =
+    sink.lift[Task, String]( (_:String) => Task.now(()))
+
   val inboundQueue: String => BrokerIO[Queue] = key => for {
     q  <- declareQueue(s"incoming-queue-$key", durable = false, exclusive = false, autoDelete = false, deadLetter = None)
     ex <- declareTopicExchange("incoming", durable = false, alternateExchange = None)

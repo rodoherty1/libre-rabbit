@@ -19,12 +19,8 @@ object util {
       t.setName(s"$name-#${counter.getAndIncrement()}")
       t
     }
+
   })
 
-  val defaultLogger:Sink[Task, String] =
-    io.stdOutLines pipeIn process1.lift[String,String]((str:String) => s"[${Thread.currentThread()}] - $str")
-
-  val silentLogger:Sink[Task, String] =
-    sink.lift[Task, String]( (_:String) => Task.now(()))
 
 }
