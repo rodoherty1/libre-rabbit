@@ -9,9 +9,11 @@ import Scalaz._
 import scalaz.stream.Process._
 import scalaz.stream._
 import com.paddypowerbetfair.librerabbit.api.util._
+import org.slf4j.{Logger, LoggerFactory}
 
 class TestClient[A <: Publish] {
 
+  val logger: Logger = LoggerFactory.getLogger(this.getClass)
   implicit val pool = threadPoolFor(10, "TestClient")
   implicit val S    = Strategy.Executor(pool)
 
@@ -46,14 +48,16 @@ class TestClient[A <: Publish] {
   val reqRpl = (msgs:Process[Task, A]) => (reply:Process[Task, AmqpEnvelope]) =>
     scalaz.stream.merge.mergeN(Process((msgs to requestQueue.enqueue).drain, reply)).take(1)
 
-  def publishMessages[B](correlationId:String, msgs:Process[Task, AmqpMessage])(implicit encode:AmqpMessage => A, decode: AmqpEnvelope => B) =
+  def publishMessages[B](correlationId:String, msgs:Process[Task, AmqpMessage])(implicit encode:AmqpMessage => A, decode: AmqpEnvelope => B): Process[Task, B] = {
+    logger.info("Add some logging here !")
     for {
-      correlationId   <- emit(correlationId).toSource
-      replyQueue       = async.unboundedQueue[AmqpEnvelope]
-      _               <- eval(correlationIds.compareAndSet(_.map(_.updated(correlationId, replyQueue.enqueue))))
-      replies         = replyQueue.dequeue.take(1).onComplete(eval_(replyQueue.close))
-      reply           <- reqRpl(msgs map encode)(replies)
+      correlationId <- emit(correlationId).toSource
+      replyQueue = async.unboundedQueue[AmqpEnvelope]
+      _ <- eval(correlationIds.compareAndSet(_.map(_.updated(correlationId, replyQueue.enqueue))))
+      replies = replyQueue.dequeue.take(1).onComplete(eval_(replyQueue.close))
+      reply <- reqRpl(msgs map encode)(replies)
     } yield decode(reply)
+  }
 
   val createMessagesFromPayloads: String => Process[Task, Array[Byte]] => Process[Task, AmqpMessage] = correlationId => payloads => {
     val seqNoGen = Process.unfold(0L)( s => Some((s,s+1L))).toSource

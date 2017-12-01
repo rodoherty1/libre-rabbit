@@ -4,7 +4,9 @@ import com.paddypowerbetfair.librerabbit.api.util._
 import com.paddypowerbetfair.librerabbit.examples.model._
 import com.paddypowerbetfair.librerabbit.all._
 import com.paddypowerbetfair.librerabbit.testing.TestClient
+import org.slf4j.LoggerFactory
 
+//import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.util.Random
 import scalaz.{-\/, \/-}
@@ -22,6 +24,7 @@ object IntegrationSpecCommon {
   implicit val S    = Strategy.Executor(pool)
 
   val timeout = 15.seconds
+  val logger = LoggerFactory.getLogger(IntegrationSpecCommon.getClass)
 
   val client:TestClient[TopicPublish] = TestClient()
 
@@ -49,9 +52,9 @@ object IntegrationSpecCommon {
     val fullSequence      = Reset :: commands ::: List(Publish)
     val rawPayloads       = emitAll(fullSequence).toSource.map(_.toString.getBytes("UTF-8"))
     val versionedMessages = client.createMessagesFromPayloads(correlationId)(rawPayloads)
-    val replies           = client.publishMessages(correlationId, versionedMessages)(encode(key), decode)
+    val replies: Process[Task, String] = client.publishMessages(correlationId, versionedMessages)(encode(key), decode)
 
-    replies.runLastOr("No response received").run
+    replies.runLastOr("No response received").timed(timeout).runFor(timeout)
   }
 
   val publishCommandsInReverseOrderAndWaitForReply = (key:String) => (commands:List[Command]) => {

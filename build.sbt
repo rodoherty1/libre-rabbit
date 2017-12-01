@@ -47,13 +47,15 @@ lazy val testDependencies = Seq(
   specs2CoreDep,
   junitDep,
   spec2ScalaCheckDep,
-  specs2JunitDep
+  specs2JunitDep,
+  logbackDep
 )
 
 lazy val scalazVersion = "7.1.1"
 lazy val scalazStreamVersion = "0.7a"
 lazy val rabbitmqVersion = "3.3.4"
 lazy val slf4jVersion = "1.7.5"
+lazy val logbackVersion = "1.2.3"
 lazy val typesafeConfVersion = "1.3.1"
 lazy val monocleVersion = "1.1.1"
 lazy val specs2Version = "3.6.6"
@@ -67,6 +69,7 @@ lazy val scalazConcDep     =  "org.scalaz"                  %%  "scalaz-concurre
 lazy val scalazEffectDep   =  "org.scalaz"                  %%  "scalaz-effect"              % scalazVersion
 lazy val scalazStreamDep   =  "org.scalaz.stream"           %%  "scalaz-stream"              % scalazStreamVersion
 lazy val slf4jDep          =  "org.slf4j"                    %  "slf4j-api"                  % slf4jVersion
+lazy val logbackDep          =  "ch.qos.logback"                    %  "logback-classic"                  % logbackVersion     % Test
 lazy val typesafeConfDep   =  "com.typesafe"                 %  "config"                     % typesafeConfVersion
 lazy val monocleCoreDep    =  "com.github.julien-truffaut"  %%  "monocle-core"               % monocleVersion
 lazy val monocleGenericDep =  "com.github.julien-truffaut"  %%  "monocle-generic"            % monocleVersion
