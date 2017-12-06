@@ -10,7 +10,7 @@ object DistributedCalculatorV1Spec extends Properties("DistributedCalculatorV1")
 
   val publishShortExpressionV1 = property("Publish-short-expression-v1") = forAll(fewCommandsGen) { cmds =>
     val result: String = publishCommandsAndWaitForReply("v1")(cmds)
-    val expected      = cmds.foldLeft[Expression](Literal(0))(_ apply _).toString
+    val expected: String = cmds.foldLeft[Expression](Literal(0))(_ apply _).toString
 
     result == expected
   }

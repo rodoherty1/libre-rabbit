@@ -1,5 +1,6 @@
 package com.paddypowerbetfair.librerabbit.api.specs
 
+import com.paddypowerbetfair.librerabbit.all
 import com.paddypowerbetfair.librerabbit.api.util._
 import com.paddypowerbetfair.librerabbit.examples.model._
 import com.paddypowerbetfair.librerabbit.all._
@@ -44,14 +45,14 @@ object IntegrationSpecCommon {
       c  <- process(q, prefetch = 1, exclusive = false) map (flattenBatch _ andThen autoAck)
     } yield c
 
-  val encode = (key:String) => (msg:AmqpMessage) => TopicPublish(TopicKey(key), msg)
-  val decode = (env:AmqpEnvelope) => new String(env.message.payload, "UTF-8")
+  val encode: String => AmqpMessage => TopicPublish = (key:String) => (msg:AmqpMessage) => TopicPublish(TopicKey(key), msg)
+  val decode: AmqpEnvelope => String = (env:AmqpEnvelope) => new String(env.message.payload, "UTF-8")
 
   val publishCommandsAndWaitForReply: String => List[Command] => String = (key:String) => (commands:List[Command]) => {
     val correlationId     = if(key == "v1") "default-calculationId" else Random.nextString(20)
     val fullSequence      = Reset :: commands ::: List(Publish)
-    val rawPayloads       = emitAll(fullSequence).toSource.map(_.toString.getBytes("UTF-8"))
-    val versionedMessages = client.createMessagesFromPayloads(correlationId)(rawPayloads)
+    val rawPayloads: Process[Task, Array[Byte]] = emitAll(fullSequence).toSource.map(_.toString.getBytes("UTF-8"))
+    val versionedMessages: Process[Task, AmqpMessage] = client.createMessagesFromPayloads(correlationId)(rawPayloads)
     val replies: Process[Task, String] = client.publishMessages(correlationId, versionedMessages)(encode(key), decode)
 
     replies.runLastOr("No response received").timed(timeout).runFor(timeout)
@@ -66,7 +67,7 @@ object IntegrationSpecCommon {
     val rawPayloads       = emitAll(fullSequence).toSource.map(_.toString.getBytes("UTF-8"))
     val versionedMessages = client.createMessagesFromPayloads(correlationId)(rawPayloads)
     val reversedOrder     = versionedMessages.fold(SortedSet.empty[AmqpMessage](reverseOrder))(_ + _).flatMap(msgs => Process.emitAll(msgs.to[Seq]).toSource)
-    val replies           = client.publishMessages(correlationId, reversedOrder)(encode(key), decode)
+    val replies: Process[Task, String] = client.publishMessages[String](correlationId, reversedOrder)(encode(key), decode)
 
     replies.runLastOr("No response received").timed(timeout).run
   }
