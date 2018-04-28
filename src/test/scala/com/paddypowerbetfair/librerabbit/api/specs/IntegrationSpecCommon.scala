@@ -52,7 +52,7 @@ object IntegrationSpecCommon {
     val fullSequence      = Reset :: commands ::: List(Publish)
     val rawPayloads       = emitAll(fullSequence).toSource.map(_.toString.getBytes("UTF-8"))
     val versionedMessages = client.createMessagesFromPayloads(correlationId)(rawPayloads)
-    val replies: Process[Task, String] = client.publishMessages(correlationId, versionedMessages)(encode(key), decode)
+    val replies           = client.publishMessages(correlationId, versionedMessages)(encode(key), decode)
 
     replies.runLastOr("No response received").timed(timeout).runFor(timeout)
   }
