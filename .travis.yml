@@ -5,7 +5,5 @@ matrix:
   include:
   - jdk: oraclejdk8
     scala: 2.11.8
-script:
-- sbt coverageReport
-after_success:
-- sbt coveralls
+script: "sbt clean coverage test"
+after_success: "sbt coverageReport coveralls"

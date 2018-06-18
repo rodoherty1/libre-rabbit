@@ -90,6 +90,5 @@ lazy val junitDep          =  "junit"                        %  "junit"         
 
 
 lazy val scalazStreamResolver = Seq(
-  "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
-  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+  "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 )

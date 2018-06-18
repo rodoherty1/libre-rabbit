@@ -1,4 +1,4 @@
-# libre-rabbit
+# libre-rabbit [![Build Status](https://travis-ci.org/PaddyPowerBetfair/libre-rabbit.svg?branch=master)](https://travis-ci.org/PaddyPowerBetfair/libre-rabbit)
 Open-source RabbitMq Library in Scala
 
 # How can I contribute?
