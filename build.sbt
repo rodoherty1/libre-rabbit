@@ -1,7 +1,13 @@
+
+organization := "com.paddypowerbetfair"
+
+name := "libre-rabbit"
+
+version := "0.0.1-SNAPSHOT"
+
+scalaVersion := "2.11.8"
+
 lazy val baseSettings = Seq(
-  organization := "com.paddypowerbetfair.librerabbit",
-  version := "1.0-SNAPSHOT",
-  scalaVersion := "2.11.8",
   logBuffered in Test := false,
   resolvers ++= scalazStreamResolver
 )
@@ -43,7 +49,6 @@ lazy val librerabbitDependencies = Seq(
 
 lazy val testDependencies = Seq(
   scalaCheckDep,
-//  specs2Dep,
   specs2CoreDep,
   junitDep,
   spec2ScalaCheckDep,
@@ -74,8 +79,9 @@ lazy val typesafeConfDep   =  "com.typesafe"                 %  "config"        
 lazy val monocleCoreDep    =  "com.github.julien-truffaut"  %%  "monocle-core"               % monocleVersion
 lazy val monocleGenericDep =  "com.github.julien-truffaut"  %%  "monocle-generic"            % monocleVersion
 lazy val monocleMacroDep   =  "com.github.julien-truffaut"  %%  "monocle-macro"              % monocleVersion
-val scalaCheckDep     =  "org.scalacheck"              %%  "scalacheck"                 % scalaCheckVersion    % Test
-//lazy val specs2Dep         =  "org.specs2"                  %%  "specs2"                     % specs2Version        % Test
+
+
+lazy val scalaCheckDep     =  "org.scalacheck"              %%  "scalacheck"                 % scalaCheckVersion    % Test
 lazy val spec2ScalaCheckDep= "org.specs2"                   %%  "specs2-scalacheck"          % specs2Version        % Test
 
 lazy val specs2CoreDep     =  "org.specs2"                  %%  "specs2-core"                % specs2Version        % Test
@@ -84,5 +90,6 @@ lazy val junitDep          =  "junit"                        %  "junit"         
 
 
 lazy val scalazStreamResolver = Seq(
-  "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
+  "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 )

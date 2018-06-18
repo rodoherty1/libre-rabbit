@@ -13,13 +13,13 @@ object CommandGenerator {
 
   val numberGen = Gen.chooseNum(Long.MinValue, Long.MaxValue)
 
-  val addToGen = numberGen map AddTo
+  val addToGen: Gen[AddTo] = numberGen map AddTo
 
   val subtractByGen = numberGen map SubtractBy
 
   val multiplyByGen = numberGen map MultiplyBy
 
-  val divideBy = numberGen map (n => (if(n == 0) 1 else n)) map DivideBy
+  val divideBy = numberGen map (n => if(n == 0) 1 else n) map DivideBy
 
   val commandGen = Gen.oneOf(addToGen, subtractByGen, multiplyByGen, divideBy)
 
