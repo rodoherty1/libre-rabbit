@@ -1,9 +1,11 @@
 
+import com.typesafe.sbt.GitVersioning
+
 organization := "com.paddypowerbetfair"
 
 name := "libre-rabbit"
 
-version := "0.0.1-SNAPSHOT"
+version := "0.0.2-SNAPSHOT"
 
 scalaVersion := "2.11.8"
 
@@ -21,7 +23,6 @@ lazy val scalacBaseOpts = Seq(
   "-Ywarn-dead-code",
   "-Ywarn-infer-any",
   "-Ywarn-unused-import"
-
 )
 
 lazy val scalacRigidOpts = Seq(
@@ -49,11 +50,11 @@ lazy val librerabbitDependencies = Seq(
 
 lazy val testDependencies = Seq(
   scalaCheckDep,
-  specs2CoreDep,
-  junitDep,
-  spec2ScalaCheckDep,
-  specs2JunitDep,
-  logbackDep
+  logbackDep,
+  scalaTestDep,
+  scalaCheckDep,
+  mockitoDep,
+  scalazScalaTestDep
 )
 
 lazy val scalazVersion = "7.1.1"
@@ -63,9 +64,10 @@ lazy val slf4jVersion = "1.7.5"
 lazy val logbackVersion = "1.2.3"
 lazy val typesafeConfVersion = "1.3.1"
 lazy val monocleVersion = "1.1.1"
-lazy val specs2Version = "3.6.6"
-lazy val scalaCheckVersion = "1.11.4"
-lazy val junitVersion = "4.10"
+lazy val scalaCheckVersion = "1.14.0"
+lazy val scalaTestVersion = "3.0.5"
+lazy val mockitoVersion = "2.19.0"
+lazy val scalazScalaTestVersion = "1.1.2"
 
 
 lazy val amqpClientDep     =  "com.rabbitmq"                 %  "amqp-client"                % rabbitmqVersion
@@ -81,14 +83,60 @@ lazy val monocleGenericDep =  "com.github.julien-truffaut"  %%  "monocle-generic
 lazy val monocleMacroDep   =  "com.github.julien-truffaut"  %%  "monocle-macro"              % monocleVersion
 
 
-lazy val scalaCheckDep     =  "org.scalacheck"              %%  "scalacheck"                 % scalaCheckVersion    % Test
-lazy val spec2ScalaCheckDep= "org.specs2"                   %%  "specs2-scalacheck"          % specs2Version        % Test
-
-lazy val specs2CoreDep     =  "org.specs2"                  %%  "specs2-core"                % specs2Version        % Test
-lazy val specs2JunitDep    =  "org.specs2"                  %%  "specs2-junit"               % specs2Version        % Test
-lazy val junitDep          =  "junit"                        %  "junit"                      % junitVersion         % Test
-
+lazy val scalaCheckDep     =  "org.scalacheck"              %%  "scalacheck"                 % scalaCheckVersion % Test
+lazy val scalaTestDep      =  "org.scalatest"               %%  "scalatest"                  % scalaTestVersion  % Test
+lazy val mockitoDep        =  "org.mockito"                  %  "mockito-core"               % mockitoVersion    % Test
+lazy val scalazScalaTestDep = "org.typelevel"               %%  "scalaz-scalatest"           % scalazScalaTestVersion % Test
 
 lazy val scalazStreamResolver = Seq(
   "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 )
+
+addCommandAlias("ci-all",  ";+clean ;+compile ;+test ;+package")
+addCommandAlias("release", ";+publishSigned ;sonatypeReleaseAll")
+
+
+// For distribution to sonartype
+
+useGpg := false
+usePgpKeyHex("4BEF11849D8638711107EB75B76CCB046AAA0BF2")
+pgpPublicRing := baseDirectory.value / "project" / ".gnupg" / "pubring.gpg"
+pgpSecretRing := baseDirectory.value / "project" / ".gnupg" / "secring.gpg"
+pgpPassphrase := sys.env.get("PGP_PASS").map(_.toArray)
+
+credentials += Credentials(
+  "Sonatype Nexus Repository Manager",
+  "oss.sonatype.org",
+  sys.env.getOrElse("SONATYPE_USER", ""),
+  sys.env.getOrElse("SONATYPE_PASS", "")
+)
+
+isSnapshot := version.value endsWith "SNAPSHOT"
+
+publishTo := Some(
+  if (isSnapshot.value)
+    Opts.resolver.sonatypeSnapshots
+  else
+    Opts.resolver.sonatypeStaging
+)
+
+enablePlugins(GitVersioning)
+
+/* The BaseVersion setting represents the in-development (upcoming) version,
+ * as an alternative to SNAPSHOTS.
+ */
+git.baseVersion := "3.0.0"
+
+val ReleaseTag = """^v([\d\.]+)$""".r
+git.gitTagToVersionNumber := {
+  case ReleaseTag(v) => Some(v)
+  case _ => None
+}
+
+git.formattedShaVersion := {
+  val suffix = git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, git.uncommittedSignifier.value)
+
+  git.gitHeadCommit.value map { _.substring(0, 7) } map { sha =>
+    git.baseVersion.value + "-" + sha + suffix
+  }
+}
