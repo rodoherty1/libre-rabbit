@@ -9,6 +9,7 @@ matrix:
 script:
 - sbt -J-Xmx6144m ++$TRAVIS_SCALA_VERSION $COMMAND
 - sbt coverageReport
+- sbt coverageAggregate
 after_success:
 - sbt coveralls
 - ./project/publish
