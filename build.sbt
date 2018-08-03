@@ -22,7 +22,8 @@ lazy val scalacBaseOpts = Seq(
   "-Yno-adapted-args",
   "-Ywarn-dead-code",
   "-Ywarn-infer-any",
-  "-Ywarn-unused-import"
+  "-Ywarn-unused-import",
+  "-Ylog-classpath"
 )
 
 lazy val scalacRigidOpts = Seq(
@@ -57,7 +58,7 @@ lazy val testDependencies = Seq(
   scalazScalaTestDep
 )
 
-lazy val scalazVersion = "7.1.1"
+lazy val scalazVersion = "7.1.3"
 lazy val scalazStreamVersion = "0.7a"
 lazy val rabbitmqVersion = "3.3.4"
 lazy val slf4jVersion = "1.7.5"
@@ -67,7 +68,7 @@ lazy val monocleVersion = "1.1.1"
 lazy val scalaCheckVersion = "1.14.0"
 lazy val scalaTestVersion = "3.0.5"
 lazy val mockitoVersion = "2.19.0"
-lazy val scalazScalaTestVersion = "1.1.2"
+lazy val scalazScalaTestVersion = "0.5.2"
 
 
 lazy val amqpClientDep     =  "com.rabbitmq"                 %  "amqp-client"                % rabbitmqVersion
@@ -76,16 +77,16 @@ lazy val scalazConcDep     =  "org.scalaz"                  %%  "scalaz-concurre
 lazy val scalazEffectDep   =  "org.scalaz"                  %%  "scalaz-effect"              % scalazVersion
 lazy val scalazStreamDep   =  "org.scalaz.stream"           %%  "scalaz-stream"              % scalazStreamVersion
 lazy val slf4jDep          =  "org.slf4j"                    %  "slf4j-api"                  % slf4jVersion
-lazy val logbackDep          =  "ch.qos.logback"                    %  "logback-classic"                  % logbackVersion     % Test
 lazy val typesafeConfDep   =  "com.typesafe"                 %  "config"                     % typesafeConfVersion
 lazy val monocleCoreDep    =  "com.github.julien-truffaut"  %%  "monocle-core"               % monocleVersion
 lazy val monocleGenericDep =  "com.github.julien-truffaut"  %%  "monocle-generic"            % monocleVersion
 lazy val monocleMacroDep   =  "com.github.julien-truffaut"  %%  "monocle-macro"              % monocleVersion
 
 
-lazy val scalaCheckDep     =  "org.scalacheck"              %%  "scalacheck"                 % scalaCheckVersion % Test
-lazy val scalaTestDep      =  "org.scalatest"               %%  "scalatest"                  % scalaTestVersion  % Test
-lazy val mockitoDep        =  "org.mockito"                  %  "mockito-core"               % mockitoVersion    % Test
+lazy val logbackDep        =  "ch.qos.logback"               %  "logback-classic"            % logbackVersion         % Test
+lazy val scalaCheckDep     =  "org.scalacheck"              %%  "scalacheck"                 % scalaCheckVersion      % Test
+lazy val scalaTestDep      =  "org.scalatest"               %%  "scalatest"                  % scalaTestVersion       % Test
+lazy val mockitoDep        =  "org.mockito"                  %  "mockito-core"               % mockitoVersion         % Test
 lazy val scalazScalaTestDep = "org.typelevel"               %%  "scalaz-scalatest"           % scalazScalaTestVersion % Test
 
 lazy val scalazStreamResolver = Seq(

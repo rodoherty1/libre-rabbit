@@ -4,23 +4,24 @@ import com.typesafe.config.ConfigFactory.parseString
 import com.typesafe.config.{Config, ConfigFactory}
 import com.paddypowerbetfair.librerabbit.examples.repositories.{InMemoryRepository, SimpleRepository}
 import com.paddypowerbetfair.librerabbit.all._
-
 import scalaz._
 import Scalaz._
 import scalaz.concurrent._
 import scalaz.stream._
+
 import scala.concurrent.duration._
 import com.paddypowerbetfair.librerabbit.api.util._
+
 
 object DemoApp {
 
   implicit val pool = threadPoolFor(10, "DemoApp")
   implicit val S    = Strategy.Executor(pool)
 
-  val defaultLogger:Sink[Task, String] =
+  implicit val defaultLogger:Sink[Task, String] =
     io.stdOutLines pipeIn process1.lift[String,String]((str:String) => s"[${Thread.currentThread()}] - $str")
 
-  val silentLogger:Sink[Task, String] =
+  implicit val silentLogger:Sink[Task, String] =
     sink.lift[Task, String]( (_:String) => Task.now(()))
 
   val inboundQueue: String => BrokerIO[Queue] = key => for {
