@@ -22,8 +22,7 @@ lazy val scalacBaseOpts = Seq(
   "-Yno-adapted-args",
   "-Ywarn-dead-code",
   "-Ywarn-infer-any",
-  "-Ywarn-unused-import",
-  "-Ylog-classpath"
+  "-Ywarn-unused-import"
 )
 
 lazy val scalacRigidOpts = Seq(
