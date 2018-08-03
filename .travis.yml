@@ -8,8 +8,7 @@ matrix:
     env: COMMAND=ci-all PUBLISH=true
 script:
 - sbt -J-Xmx6144m ++$TRAVIS_SCALA_VERSION $COMMAND
-- sbt coverageReport
-- sbt coverageAggregate
+- sbt coverageReport coverageAggregate
 after_success:
 - sbt coveralls
 - ./project/publish

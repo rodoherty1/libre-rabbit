@@ -5,7 +5,7 @@ organization := "com.paddypowerbetfair"
 
 name := "libre-rabbit"
 
-version := "0.0.3-SNAPSHOT"
+version := "0.0.4-SNAPSHOT"
 
 scalaVersion := "2.11.8"
 
